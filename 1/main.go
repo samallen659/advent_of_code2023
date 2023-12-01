@@ -12,7 +12,6 @@ import (
 
 var data = utils.ReadInput("/1/input.txt")
 
-var digitStrings = []string{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
 var digitMap = map[string]string{
 	"one":   "o1e",
 	"two":   "t2o",
@@ -64,9 +63,9 @@ func part2(data string) int {
 
 	var numbers []int
 	for _, line := range lines {
-		for _, digit := range digitStrings {
-			r, _ := regexp.Compile(digit)
-			line = string(r.ReplaceAll([]byte(line), []byte(digitMap[digit])))
+		for key, value := range digitMap {
+			r, _ := regexp.Compile(key)
+			line = string(r.ReplaceAll([]byte(line), []byte(value)))
 		}
 		chars := strings.Split(line, "")
 		var numChars []string
