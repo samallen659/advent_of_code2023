@@ -13,6 +13,7 @@ var data = utils.ReadInput("/2/input.txt")
 
 func main() {
 	fmt.Println(part1(data))
+	fmt.Println(part2(data))
 }
 
 type Round struct {
@@ -73,4 +74,62 @@ loop:
 	}
 
 	return count
+}
+
+func part2(data string) int {
+	lines := strings.Split(data, "\n")
+
+	var games []Game
+	for i, line := range lines {
+		var game Game
+		game.id = i + 1
+		roundsInput := strings.Split(strings.Split(line, ": ")[1], ";")
+		for _, roundInput := range roundsInput {
+			var round Round
+			r, _ := regexp.Compile("\\d{1,2} blue")
+			if r.Match([]byte(roundInput)) {
+				blue := r.FindStringSubmatch(roundInput)
+				blueCount, _ := strconv.Atoi(strings.Split(blue[0], " ")[0])
+				round.blue += blueCount
+			}
+			r, _ = regexp.Compile("\\d{1,2} red")
+			if r.Match([]byte(roundInput)) {
+				red := r.FindStringSubmatch(roundInput)
+				redCount, _ := strconv.Atoi(strings.Split(red[0], " ")[0])
+				round.red += redCount
+			}
+			r, _ = regexp.Compile("\\d{1,2} green")
+			if r.Match([]byte(roundInput)) {
+				green := r.FindStringSubmatch(roundInput)
+				greenCount, _ := strconv.Atoi(strings.Split(green[0], " ")[0])
+				round.green += greenCount
+			}
+			game.rounds = append(game.rounds, round)
+		}
+
+		games = append(games, game)
+	}
+
+	var total int
+	for _, g := range games {
+		var power int
+		var blueMin int
+		var redMin int
+		var greenMin int
+		for _, r := range g.rounds {
+			if r.blue > blueMin {
+				blueMin = r.blue
+			}
+			if r.red > redMin {
+				redMin = r.red
+			}
+			if r.green > greenMin {
+				greenMin = r.green
+			}
+		}
+		power = blueMin * redMin * greenMin
+		total += power
+	}
+
+	return total
 }
